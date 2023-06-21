@@ -43,8 +43,8 @@ function AddressBox(props) {
           className="w-full rounded-full border-2 border-gray-300  focus:outline-yellow-400 px-2 py-2 mt-3 "
         />
         <p className="py-3">Area/City</p>
-        <div className="w-full rounded-full border-2 border-gray-300 bg-gray-100  ">
-          {/* <p className="text-gray-500 my-2">{area + ", " + city}</p> */}
+        <div className="w-full rounded-full border-2 border-gray-300 bg-gray-100 h-10 px-2">
+          <p className="text-gray-500 my-2">{area + ", " + city}</p>
         </div>
         <div className="relative w-full">
           <div

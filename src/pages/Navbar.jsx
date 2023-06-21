@@ -24,12 +24,14 @@ function Navbar(props) {
   const handelLocationBox = (data) => {
     setIsLocationBoxOpen(!isLocationBoxOpen);
 
+  if(!data.city=="" && !data.area==""){
     setLocationData({
       city: data.city,
       area: data.area,
     });
     localStorage.setItem("city", data.city);
     localStorage.setItem("area", data.area);
+  }
   };
   useEffect(() => {
     const storedCity = localStorage.getItem("city");
@@ -38,7 +40,7 @@ function Navbar(props) {
       city: storedCity,
       area: storedArea,
     });
-    if (storedArea) {
+    if (storedArea=="" && storedCity=="") {
       setIsLocationBoxOpen(true);
     }
   }, []);

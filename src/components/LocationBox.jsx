@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/logo.webp";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { MdGpsFixed } from "react-icons/md";
+import circle_lazy_loading from "../assets/circle_lazy_loading.gif";
 import cities from "../data/cities";
 
 function LocationBox(props) {
-  // for opening drop don list of cities in input field
+//for checking lazy load 
+const [isLoading, setIsLoading] = useState(false);
+
+
+  //for chaning or disbling button if location data is empty
+  const [isEanbled,setEnabled]=useState(false)
 
   const [isCityListOpen, setIsCityListOpen] = useState(false);
   const handleOpenCityList = () => {
@@ -53,6 +59,7 @@ function LocationBox(props) {
 
   // Getteing cites and area from Api using current Lat Long
   const handleClick = () => {
+    setIsLoading(true)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -68,6 +75,7 @@ function LocationBox(props) {
               console.log(data.results[0].components); // Inspect the response in the console
 
               const { county, suburb, city } = data.results[0].components;
+              setIsLoading(false)
               if (city) {
                 setLocationData({
                   city: city,
@@ -84,19 +92,36 @@ function LocationBox(props) {
             })
             .catch((error) => {
               console.log(error);
+              setIsLoading(false)
             });
         },
         (error) => {
           console.log(error);
+          setIsLoading(false)
         }
       );
     } else {
       console.log("Geolocation is not supported by your browser.");
+      setIsLoading(false)
     }
   };
+ 
   const handleLocation = () => {
-    props.open(locationData);
+    if (!locationData.city=="" && !locationData.area==""){
+      props.open(locationData);
+      
+      
+    }
   };
+  useEffect(()=>{
+    if (!locationData.city=="" && !locationData.area==""){
+      
+      setEnabled(true)
+      
+    }
+  })
+  
+  
   return (
     <div
       // calling function in paraent for closing this child
@@ -157,13 +182,13 @@ function LocationBox(props) {
             {filteredCity.map((item, index) => {
               return (
                 <>
-                  <li
+                 <ul> <li
                     key={index}
                     onClick={() => handleSelected("city", item.city)}
                     className="font-medium text-gray-500 border-b-2 py-1 px-3 hover:bg-gray-100"
                   >
                     {item.city}
-                  </li>
+                  </li></ul>
                 </>
               );
             })}
@@ -203,12 +228,21 @@ function LocationBox(props) {
             )}
           </ul>
         </div>
+        <div className="relative w-full">
+              <div
+                className={` ${
+                  isLoading ? "block" : "hidden"
+                } top-4 left-[45%]`}
+              >
+                <img src={circle_lazy_loading} alt="Please Wait" />
+              </div>
         <button
-          className="bg-red-500 font-medium text-white hover:bg-yellow-400 hover:text-black rounded-3xl w-full py-2 mt-3 "
+          className={`${isEanbled?"bg-red-500 hover:bg-yellow-400 hover:text-black":"bg-gray-300"} font-medium text-white  rounded-3xl w-full py-2 mt-3 `}
           onClick={handleLocation}
         >
           Select
         </button>
+        </div>
       </div>
     </div>
   );
