@@ -18,29 +18,31 @@ import AddressBox from "../components/AddressBox";
 
 function Navbar(props) {
   const navigate = useNavigate();
+
   const [isLocationBoxOpen, setIsLocationBoxOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [locationData, setLocationData] = useState({ city: "", area: "" });
   const handelLocationBox = (data) => {
     setIsLocationBoxOpen(!isLocationBoxOpen);
 
-  if(!data.city=="" && !data.area==""){
-    setLocationData({
-      city: data.city,
-      area: data.area,
-    });
-    localStorage.setItem("city", data.city);
-    localStorage.setItem("area", data.area);
-  }
+    if (!data.city == "" && !data.area == "") {
+      setLocationData({
+        city: data.city,
+        area: data.area,
+      });
+      sessionStorage.setItem("city", data.city);
+      sessionStorage.setItem("area", data.area);
+    }
   };
+
   useEffect(() => {
-    const storedCity = localStorage.getItem("city");
-    const storedArea = localStorage.getItem("area");
+    const storedCity = sessionStorage.getItem("city");
+    const storedArea = sessionStorage.getItem("area");
     setLocationData({
       city: storedCity,
       area: storedArea,
     });
-    if (storedArea=="" && storedCity=="") {
+    if (storedArea === null && storedCity === null) {
       setIsLocationBoxOpen(true);
     }
   }, []);
@@ -78,7 +80,7 @@ function Navbar(props) {
   const switchLazyLoading = useSelector((state) => state.handleLazyLoading);
   // for address box
   const switchAddressBox = useSelector((state) => state.handleAddressBox);
-  console.log("currently address box is open", switchAddressBox);
+
   return (
     <>
       <div className=" w-full bg-yellow-400 fixed z-[2] ">

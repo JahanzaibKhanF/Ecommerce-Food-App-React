@@ -6,12 +6,12 @@ import circle_lazy_loading from "../assets/circle_lazy_loading.gif";
 import cities from "../data/cities";
 
 function LocationBox(props) {
-//for checking lazy load 
-const [isLoading, setIsLoading] = useState(false);
-
+  //for checking lazy load
+  const [isLoading, setIsLoading] = useState(false);
 
   //for chaning or disbling button if location data is empty
-  const [isEanbled,setEnabled]=useState(false)
+  const [isEanbled, setEnabled] = useState(false);
+  const [showLocationCloser, setShoLocationCloser] = useState(true);
 
   const [isCityListOpen, setIsCityListOpen] = useState(false);
   const handleOpenCityList = () => {
@@ -59,7 +59,7 @@ const [isLoading, setIsLoading] = useState(false);
 
   // Getteing cites and area from Api using current Lat Long
   const handleClick = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -75,7 +75,7 @@ const [isLoading, setIsLoading] = useState(false);
               console.log(data.results[0].components); // Inspect the response in the console
 
               const { county, suburb, city } = data.results[0].components;
-              setIsLoading(false)
+              setIsLoading(false);
               if (city) {
                 setLocationData({
                   city: city,
@@ -92,60 +92,60 @@ const [isLoading, setIsLoading] = useState(false);
             })
             .catch((error) => {
               console.log(error);
-              setIsLoading(false)
+              setIsLoading(false);
             });
         },
         (error) => {
           console.log(error);
-          setIsLoading(false)
+          setIsLoading(false);
         }
       );
     } else {
       console.log("Geolocation is not supported by your browser.");
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
- 
+
   const handleLocation = () => {
-    if (!locationData.city=="" && !locationData.area==""){
+    if (!locationData.city == "" && !locationData.area == "") {
       props.open(locationData);
-      
-      
     }
   };
-  useEffect(()=>{
-    if (!locationData.city=="" && !locationData.area==""){
-      
-      setEnabled(true)
-      
+  useEffect(() => {
+    if (!locationData.city == "" && !locationData.area == "") {
+      setEnabled(true);
     }
-  })
-  
-  
+  });
+  useEffect(() => {
+    const storedCity = sessionStorage.getItem("city");
+    const storedArea = sessionStorage.getItem("area");
+
+    if (storedArea === null && storedCity === null) {
+      setShoLocationCloser(false);
+    } else {
+      setShoLocationCloser(true);
+    }
+  }, []);
+
   return (
-    <div
-      // calling function in paraent for closing this child
-      onClick={props.open}
-      className=" w-full  h-full py-[100px]  bg-black bg-opacity-50 backdrop-filter backdrop-blur-md fixed z-[10]"
-    >
-      <div
-        // rejecting onclicks of paranets div
-        onClick={(e) => e.stopPropagation()}
-        className="mx-auto w-[320px] sm:w-[500px] h-fit  rounded-3xl bg-white px-3  py-3 relative  ]"
-      >
-        <div className="flex justify-between px-3">
-          <div className="w-1/7 "></div>
-          <div className="w-1/5 ">
-            <img src={logo} alt="logo" className="w-full" />
-          </div>
-          <div className="w-1/7 ">
-            <AiFillCloseSquare
-              onClick={props.open}
-              size={30}
-              className="cursor-pointer"
-            />
-          </div>
+    <div className=" w-full  h-full py-[100px]  bg-black bg-opacity-50 backdrop-filter backdrop-blur-md fixed z-[10]">
+      <div className="mx-auto w-[320px] sm:w-[500px] h-fit  rounded-3xl bg-white px-3  py-3 relative  ]">
+        <div
+          className={`w-1/7 ${
+            showLocationCloser ? "show" : "hidden"
+          } absolute right-3 top-2`}
+        >
+          <AiFillCloseSquare
+            onClick={props.open}
+            size={30}
+            className="cursor-pointer"
+          />
         </div>
+
+        <div className="w-[20%] mx-auto">
+          <img src={logo} alt="logo" className="w-full" />
+        </div>
+
         <p className="text-center text-xl font-medium">
           Please select your location
         </p>
@@ -182,13 +182,16 @@ const [isLoading, setIsLoading] = useState(false);
             {filteredCity.map((item, index) => {
               return (
                 <>
-                 <ul> <li
-                    key={index}
-                    onClick={() => handleSelected("city", item.city)}
-                    className="font-medium text-gray-500 border-b-2 py-1 px-3 hover:bg-gray-100"
-                  >
-                    {item.city}
-                  </li></ul>
+                  <ul>
+                    {" "}
+                    <li
+                      key={index}
+                      onClick={() => handleSelected("city", item.city)}
+                      className="font-medium text-gray-500 border-b-2 py-1 px-3 hover:bg-gray-100"
+                    >
+                      {item.city}
+                    </li>
+                  </ul>
                 </>
               );
             })}
@@ -229,19 +232,23 @@ const [isLoading, setIsLoading] = useState(false);
           </ul>
         </div>
         <div className="relative w-full">
-              <div
-                className={` ${
-                  isLoading ? "block" : "hidden"
-                } top-4 left-[45%]`}
-              >
-                <img src={circle_lazy_loading} alt="Please Wait" />
-              </div>
-        <button
-          className={`${isEanbled?"bg-red-500 hover:bg-yellow-400 hover:text-black":"bg-gray-300"} font-medium text-white  rounded-3xl w-full py-2 mt-3 `}
-          onClick={handleLocation}
-        >
-          Select
-        </button>
+          <div
+            className={` ${
+              isLoading ? "block" : "hidden"
+            } top-4 left-[45%] absolute w-10`}
+          >
+            <img src={circle_lazy_loading} alt="Please Wait" />
+          </div>
+          <button
+            className={`${
+              isEanbled
+                ? "bg-red-500 hover:bg-yellow-400 hover:text-black"
+                : "bg-gray-300"
+            } font-medium text-white  rounded-3xl w-full py-2 mt-3 `}
+            onClick={handleLocation}
+          >
+            Select
+          </button>
         </div>
       </div>
     </div>

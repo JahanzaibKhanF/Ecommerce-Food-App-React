@@ -152,24 +152,28 @@ function Checkout(props) {
                     />
                   </div>
                 </div>
-                <div className="w-1/4 my-5">
+                {/* show addres here if availble  */}
+                <div className="w-1/4 my-5 ">
                   <p>Your Address</p>{" "}
                   <p className="text-gray-500 my-2">{area + ", " + city}</p>
-                  <div className="w-full relative">
-                    <div
-                      className={` ${
-                        isLoading ? "block" : "hidden"
-                      } text-white absolute w-5 top-2 left-1/2`}
-                    >
-                      <img src={circle_lazy_loading} alt="Please Wait" />
-                    </div>
-                    <button
-                      onClick={handleAddressBox}
-                      className="w-full rounded-full py-2 font-bold bg-red-500 text-white hover:bg-yellow-400 hover:text-black"
-                    >
-                      Add/Change Address
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleAddressBox}
+                    className="w-full rounded-full py-2 font-bold bg-red-500 text-white hover:bg-yellow-400 hover:text-black"
+                  >
+                    Add/Change Address
+                  </button>
+                </div>
+                {/* if no address then show address adding link/button */}
+                <div className=" w-full my-10 hidden">
+                  <p className="text-center text-lg">
+                    You don't have a saved address.
+                  </p>
+                  <p
+                    onClick={handleAddressBox}
+                    className="text-center text-yellow-500 text-lg cursor-pointer"
+                  >
+                    + Add new Address
+                  </p>
                 </div>
               </div>
               <div className="w-full bg-gray-100 rounded-lg py-5 my-5 px-3">

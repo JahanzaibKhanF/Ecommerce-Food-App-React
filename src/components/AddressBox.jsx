@@ -12,13 +12,19 @@ function AddressBox(props) {
     dispatch(closeAddressBox());
   };
 
-  const handleAddress = () => {};
+  const handleAddress = () => {
+    const city = sessionStorage.getItem("city");
+    const area = sessionStorage.getItem("area");
+    const fulladdress = { location: area + ", " + city, address: address };
+    console.log(fulladdress);
+    // dispatch(closeAddressBox());
+  };
   const handleChange = (e) => {
     const address = e.target.value;
     setAddress(address);
   };
-  const city = localStorage.getItem("city");
-  const area = localStorage.getItem("area");
+  const city = sessionStorage.getItem("city");
+  const area = sessionStorage.getItem("area");
   return (
     <div
       onClick={handleAddressBox}
@@ -55,6 +61,7 @@ function AddressBox(props) {
             <img src={circle_lazy_loading} alt="Please Wait" />
           </div>
           <button
+            onClick={handleAddress}
             className={` w-full rounded-full py-2 ${
               isLoading
                 ? "bg-gray-200 text-white hover:bg-gray-200 hover:text-white"
